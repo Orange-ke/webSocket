@@ -124,4 +124,5 @@ final_target () # 完成目标输出
 set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "examples") #设置目标输出属性
 set(WEBSOCKETPP_BOOST_LIBS /usr/local/Cellar/boost/1.67.0_1/lib)
 
- target_link_libraries(${TARGET_NAME} ${WEBSOCKETPP_BOOST_LIBS}/libboost_chrono.a ${WEBSOCKETPP_BOOST_LIBS}/libboost_system.a ${WEBSOCKETPP_BOOST_LIBS}/libboost_random.a)
+find_package(nlohmann_json 3.6.1 REQUIRED)
+target_link_libraries(${TARGET_NAME} ${WEBSOCKETPP_BOOST_LIBS}/libboost_chrono.a ${WEBSOCKETPP_BOOST_LIBS}/libboost_system.a ${WEBSOCKETPP_BOOST_LIBS}/libboost_random.a nlohmann_json::nlohmann_json)

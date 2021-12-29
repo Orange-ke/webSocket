@@ -4,6 +4,8 @@
 
 #include <iostream>
 
+#include "nlohmann/json.hpp" 
+
 typedef websocketpp::server<websocketpp::config::asio> server;
 
 using websocketpp::lib::placeholders::_1;
@@ -25,9 +27,26 @@ void on_message(server* s, websocketpp::connection_hdl hdl, message_ptr msg) {
         s->stop_listening();
         return;
     }
-
     try {
-        s->send(hdl, msg->get_payload(), msg->get_opcode());
+        nlohmann::json j = nlohmann::json::parse(msg->get_payload());
+        if (j["type"] == "env") {
+            nlohmann::json reply;
+            reply["type"] = "envSet";
+            reply["content"] = "env is set";
+            s->send(hdl, reply.dump(), msg->get_opcode());
+        } else if (j["type"] == "start") {
+            nlohmann::json reply;
+            reply["type"] = "started";
+            reply["content"] = "started";
+            s->send(hdl, reply.dump(), msg->get_opcode());
+        } else if (j["type"] == "stop") {
+            nlohmann::json reply;
+            reply["type"] = "stopped";
+            reply["content"] = "stopped";
+            s->send(hdl, reply.dump(), msg->get_opcode());
+        } else {
+            std::cout << "undefined type" << std::endl;
+        }
     } catch (websocketpp::exception const & e) {
         std::cout << "Echo failed because: "
                   << "(" << e.what() << ")" << std::endl;
